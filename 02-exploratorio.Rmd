@@ -68,6 +68,7 @@ propinas <- tips %>%
          momento = recode(momento, Dinner = "Cena", Lunch = "Comida")) %>%
   select(-sexo) %>%
   mutate(dia  = fct_relevel(dia, c("Jue", "Vie", "Sab", "Dom")))
+print(propinas)
 ```
 
 Y vemos una muestra
@@ -120,7 +121,9 @@ y que satisface la siguiente serie de desigualdades
 propinas <- propinas %>%
   mutate(orden_cuenta = rank(cuenta_total, ties.method = "first"),
          f = (orden_cuenta - 0.5) / n())
+print(propinas)
 cuenta <- propinas %>% select(orden_cuenta, f, cuenta_total) %>% arrange(f)
+print(cuenta)
 bind_rows(head(cuenta), tail(cuenta)) %>% formatear_tabla()
 ```
 
