@@ -1,0 +1,245 @@
+---
+title: "01-exploratorio"
+output: pdf_document
+author: Roberto Pérez = {
+  clave única: 000173013, 
+  mail: robertosysm@gmail.com,
+  GitHub: Roberto919
+  }
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Importar librerías
+```{r}
+library(tidyverse)
+library(patchwork)
+```
+
+
+## Lee los datos
+```{r}
+tips <- read_csv("tips.csv")
+glimpse(tips)
+```
+
+
+## Recodificar nombres y niveles
+```{r}
+propinas <- tips %>%
+  rename(
+    cuenta_total = total_bill,
+    propina = tip, 
+    sexo = sex,
+    fumador = smoker,
+    dia = day, 
+    momento = time,
+    num_personas = size) %>%
+  mutate(sexo = recode(sexo, Female = "Mujer", Male = "Hombre"),
+         fumador = recode(fumador, No = "No", Si = "Si"),
+         dia = recode(dia, Sun = "Dom", Sat = "Sab", Thur = "Jue", Fri = "Vie"),
+         momento = recode(momento, Dinner = "Cena", Lunch = "Comida")) %>%
+  select(-sexo) %>%
+  mutate(dia  = fct_relevel(dia, c("Jue", "Vie", "Sab", "Dom")))
+propinas
+```
+
+
+## 1. Calcula percentiles de la variable propina
+```{r}
+## Cuartiles, mínimo y máximo
+cuartiles <- quantile(propinas$propina)
+print(cuartiles)
+print(max(propinas$propina))
+print(min(propinas$propina))
+```
+
+
+## 2. Haz una gráfica de cuantiles de la variable propina
+```{r}
+## Creación de columna con el acumulado del orden
+propinas <- propinas %>%
+  mutate(orden_propina = rank(propina, ties.method = "first"),
+         f = orden_propina / n())
+print(propinas)
+
+## Creación de gráfica
+ggplot(
+  propinas,
+  aes(
+    y=f,
+    x=propina
+  )
+) +
+  labs(subtitle="Gráfica de cuantiles: Propina") +
+  geom_point(alpha=0.5, colour='red') +
+  geom_line(alpha=0.5)
+```
+
+
+## 3. Haz un histograma de la variable propinas
+```{r}
+## Creación de gráfica de histograma
+
+#### Histograma 1 - ancho de banda de 0.1
+g_1 <- ggplot(
+  propinas,
+  aes(
+    x=propina
+  )
+) +
+  geom_histogram(binwidth=0.1)
+
+#### Histograma 2 - ancho de banda de 0.5
+g_2 <- ggplot(
+  propinas,
+  aes(
+    x=propina
+  )
+) +
+  geom_histogram(binwidth=0.5)
+
+#### Histograma 3 - ancho de banda de 1
+g_3 <- ggplot(
+  propinas,
+  aes(
+    x=propina
+  )
+) +
+  geom_histogram(binwidth=1)
+
+## Impresión de las tres gráficas creadas
+g_1 + g_2 + g_3
+```
+
+
+## 4. Haz una gráfica de cuenta total contra propina
+```{r}
+ggplot(
+  propinas,
+  aes(
+    x=cuenta_total,
+    y=propina
+  )
+) +
+  geom_point() +
+  labs(
+    title='Cuenta total vs Propina'
+  )
+```
+
+
+## 5. Calcula propina en porcentaje de la cuenta total y cuantiles
+```{r}
+## Cálculo del porcentaje de la propina
+propinas <- propinas %>%
+  mutate(pct_propina = 100*propina/cuenta_total)
+print(propinas)
+
+## Cuálculo de cuantiles de propina en porcentaje
+quantile(propinas$pct_propina)
+```
+
+
+## 6. Haz un histograma de la propina en porcentaje. Prueba condistintos anchos de banda.
+```{r}
+## Histograma 1 - Ancho de banda = 0.5
+h1 <- ggplot(
+  propinas,
+  aes(
+    x=pct_propina
+  )
+) +
+  geom_histogram(binwidth=0.5) +
+  labs(
+    title = "Binwidth = 0.5"
+  )
+
+## Histograma 2 - Ancho de banda = 1
+h2 <- ggplot(
+  propinas,
+  aes(
+    x=pct_propina
+  )
+) +
+  geom_histogram(binwidth=1) +
+  labs(
+    title = "Binwidth = 1"
+  )
+
+## Histograma 3 - Ancho de banda = 5
+h3 <- ggplot(
+  propinas,
+  aes(
+    x=pct_propina
+  )
+) +
+  geom_histogram(binwidth=5) +
+  labs(
+    title = "Binwidth = 5"
+  )
+
+h1 + h2 + h3
+```
+
+
+## 7. Describe la distribución de propina en pct. ¿Hay datos atípicos?
+Con base en los histogramas obtenidos, puedo observar las siguientes características 
+en los datos calculados de porcentaje de propina sobre cuenta total (propinas$pct_propina):
+1. La mayor parte de los porcentajes se encuentran alrededor del 15%.
+2. El grueso de los datos va del 5% al 22% aproximadamente.
+2. Hay porcentajes que se alejan mucho del grueso de los datos que superan el 40%.
+
+
+##8. Filtra los casos con porcentaje de propina muy altos. 
+## ¿Qué tipos de cuentas son? ¿Son cuentas grandes o chicas?
+```{r}
+filter(propinas, pct_propina > 30)
+```
+Observo las siguientes características de los datos de porcentaje de propina que considero "altos" o "anómalos":
+1. Están relacionados con valores de cuentas totales muy bajos que están por debajo del 10% del resto de los datos de cuentas totales.
+2. Los tres corresponden a cenas con fumadores.
+3. Fueron cenas con menos de 3 personas, lo cual corresponde al cuantil 25%.
+
+ 
+## 9. Haz una diagrama de caja y brazos para propina en dolares dependiendo del momento (comida o cena) ¿Cuál parece más grande? ¿Por qué? Haz otras gráficas si es necesario.
+```{r}
+## Gráfica de caja y brazos de cenas
+gb_cenas <- filter(propinas, momento=="Cena") %>%
+
+ggplot(
+  aes(
+    x=factor("T"),
+    y=propina
+  )
+) +
+  geom_boxplot() + 
+  labs(
+    title="Cenas"
+  ) + 
+  ylim(0, 10)
+
+
+## Gráfica de caja y brazos de comidas
+gb_comidas <- filter(propinas, momento=="Comida") %>%
+
+ggplot(
+  aes(
+    x=factor("T"),
+    y=propina
+  )
+) +
+  geom_boxplot() + 
+  labs(
+    title="Comidas"
+  ) + 
+  ylim(0, 10)
+
+
+## Impresión de gráficas resultantes
+gb_cenas + gb_comidas
+```
+Con base en las gráficas obtenidas, podemos ver que los valores de las propinas en las cenas están más dispersos que los observados en las comidas. En parte, esta dispersión se puede explicar con el hecho de que hay muchos más datos de cenas que de comidas (176 vs. 68), por lo que es más probable que se registren valores en un rango más amplio. También se puede observar que el 50% de los datos de comidas se encuentran en un rango muy compacto de valores que va del USD$1.25 aproximadamente a USD$2.4. esto hace que la "caja" de comidas se vea considerablemente más pequeña que la de cenas cuando son comparadas.
