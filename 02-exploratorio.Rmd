@@ -41,6 +41,8 @@ la evidencia de los descubrimientos
 del paso anterior? ¿qué tan bien soportadas están las respuestas y conclusiones
 por nuestro conjunto de datos?
 
+
+
 ## Algunos conceptos básicos {-}
 
 Empezamos explicando algunas ideas que no serán útiles más adelante. Por
@@ -70,8 +72,8 @@ propinas <- tips %>%
 
 Y vemos una muestra
 
-```{r }
-sample_n(propinas, 10) %>% formatear_tabla()
+```{r}
+sample_n(propinas, 10)
 ```
 
 
@@ -139,6 +141,10 @@ g_orden + g_cuantiles
 A esta función le llamamos la **función de cuantiles** para la variable
 `cuenta_total`. Nos sirve para comparar directamente los distintos valores que
 observamos los datos según el orden que ocupan.
+
+```
+## Esta gráfica es una gran alternativa para mostrar mucha información estadística en una sola visualización.
+```
 
 ```{block, type='mathblock'}
 La función de cuantiles muestral esta definida por
@@ -260,7 +266,7 @@ Intercuantílico**, definido por la diferencia entre los cuantiles 25% y 75%.
 :::
 
 ::: {.col data-latex="{0.10\textwidth}"}
-\ 
+\
 <!-- an empty Div (with a white space), serving as
 a column separator -->
 :::
@@ -468,9 +474,9 @@ resumen <- casas %>%
   mutate(mediana_zona = mediana_zona - mediana) %>%
   select(nombre_zona, mediana_zona, residual) %>%
   pivot_longer(mediana_zona:residual, names_to = "tipo", values_to = "valor")
-ggplot(resumen, aes(sample = valor)) + 
+ggplot(resumen, aes(sample = valor)) +
   geom_qq(distribution = stats::qunif) +
-  facet_wrap(~ tipo) + 
+  facet_wrap(~ tipo) +
   ylab("Precio por m2") + xlab("f") +
   labs(subtitle = "Precio por m2 por zona",
        caption = paste0("Mediana total de ", round(mediana)))
