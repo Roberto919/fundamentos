@@ -435,6 +435,8 @@ ggplot(casas, aes(x = nombre_zona, y = precio_miles)) +
   geom_boxplot() +
   coord_flip()
 ```
+<!-- - Algo interesante que vemos es que hay más variación en las casas más costosas. (es común que pase esto en las variables positivas) -->
+
 
 La primera pregunta que nos hacemos es cómo pueden variar las características de
 las casas dentro de cada zona. Para esto, podemos considerar el área de las
@@ -451,6 +453,9 @@ ggplot(casas, aes(x = nombre_zona, y = precio_m2)) +
   geom_boxplot() +
   coord_flip()
 ```
+<!-- - Los resultados de este análisis son convenientes porque los resultados se parecen. Nuestra representación es más general y nos ayuda a explicar mejor lo que pasa. -->
+  <!-- - Favorecemos siempre los modelos más simples. -->
+
 
 Podemos cuantificar la variación que observamos de zona a zona y la variación
 que hay dentro de cada una de las zonas. Una primera aproximación es observar
@@ -525,6 +530,9 @@ ggplot(resumen, aes(sample = valor)) +
   labs(subtitle = "Precio por m2 por zona",
        caption = paste0("Mediana total de ", round(mediana)))
 ```
+<!-- - Aquí lo que nos importa es descomponer el valor de las casas entre: -->
+<!--   - Valor ajustado -->
+<!--   - Residuales -->
 
 
 Vemos que la mayor parte de la variación del precio por metro cuadrado ocurre
@@ -941,6 +949,7 @@ En las siguiente secciones discutiremos estos aspectos, en los cuales pasamos
 del trabajo de "detective" al trabajo de "juez" en nuestro trabajo analítico.
 
 ## Loess {-}
+<!-- - Esta técnica nos podría ayudar a ver tendencias en series de tiempo. -->
 
 Las gráficas de dispersión son la herramienta básica para describir la relación entre dos variables cuantitativas, y como vimos en ejemplo anteriores, muchas 
 veces podemos apreciar mejor la relación entre ellas si agregamos una curva 
