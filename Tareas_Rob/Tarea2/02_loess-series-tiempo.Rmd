@@ -1,0 +1,293 @@
+---
+title: "Fundamentos estadísticos - Tarea 2"
+author: "José Roberto Pérez Chávez"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error=TRUE)
+
+# cargamos paquetes
+library(tidyverse)
+```
+
+
+
+## Series de tiempo
+Consideramos la ventas semanales de un producto a lo largo de 5 años, 
+transformaremos la variable de ventas utilizando el logaritmo. 
+
+
+
+1. Describe que observas en la gráfica.
+```{r, fig.width=5.5, fig.height = 3}
+ventas <- read_csv("ventas_semanal.csv")
+head(ventas)
+ggplot(ventas, aes(x = period, y = log(sales.kg))) + 
+  geom_line(size = 0.3)
+```
+En esta gráfica observo las siguientes características: 
+- Hay una tendencia creciente en el valor de las ventas.
+- Hay una estacionalidad marcada por lapsos de 50 periodos.
+
+
+
+Intentaremos usar suavizamiento para capturar los distintos tipos de variación
+que observamos en la serie. 
+
+2. Utiliza un suavizador *loess* para capturar la tendencia de la serie.
+```{r, fig.width=5.5, fig.height = 3}
+
+ggplot(ventas, 
+       aes(
+         x = period, 
+         y = log(sales.kg)
+         )
+       ) +
+  
+  geom_line(
+    size = 0.3
+    ) +
+  
+  geom_smooth(
+    method = "loess",
+    span=0.3,
+    degree = 1,
+    se = FALSE,
+    size = 1,
+    color = "red"
+    )
+
+
+fit_trend_1 <- loess(
+  log(sales.kg) ~ period,
+  ventas,
+  span = 0.3,
+  degree = 1
+  )
+```
+
+
+
+3. Ahora calcula los residuales de este ajuste y descríbelos mediante un suavizamiento más fino. Verifica que se ha estimado la mayor parte de la tendencia, e intenta capturar la variación estacional de los residuales.
+```{r, fig.width=5.5, fig.height = 3}
+
+print(head(ventas))
+
+
+## Cálculo de los residuales 1
+ventas_v1 <- ventas %>%
+  mutate(ajuste_1 = fitted(fit_trend_1)) %>%
+  mutate(res.trend.1 = log(sales.kg) - ajuste_1)
+
+print(head(ventas_v1))
+
+
+## Ajuste estacional (ajuste 2)
+fit_trend_2 <-loess(
+  res.trend.1 ~ period,
+  ventas_v1,
+  span=0.15,
+  degree=1
+)
+
+
+## Cálculo de los residuales 2
+ventas_v2 <- ventas_v1 %>%
+  mutate(ajuste_2 = fitted(fit_trend_2)) %>%
+  mutate(res.trend.2 = res.trend.1 - ajuste_2)
+
+print(head(ventas_v2))
+
+
+## Gráfica de estacionalidad de las ventas
+ggplot(
+  ventas_v2,
+  aes(
+    x=period
+  )
+) +
+  geom_point(
+    aes(
+      y=res.trend.1
+    ),
+    alpha=0.2,
+    size=1
+  ) +
+  geom_line(
+    aes(
+      y=ajuste_2
+    ),
+    colour="red",
+    size=1.2
+  )
+```
+
+
+
+4. Grafica los residuales obtenidos después de ajustar el componente estacional para estudiar la componente de mayor frecuencia.
+
+```{r, fig.width=5.5, fig.height = 3}
+
+ggplot(
+  ventas_v2,
+     aes(
+       x = period,
+       y = res.trend.2
+       )
+     ) +
+  geom_point(
+  )
+
+# fit_season_high <- 
+```
+
+
+
+5. **Extra opcional**. Ahora que tenemos nuestra primera estimación de cada una de 
+las componentes, podemos regresar a hacer una mejor estimación de la tendencia. 
+La ventaja de volver es que ahora podemos suavizar más sin que en nuestra 
+muestra compita tanto la variación estacional. Por tanto puedes suavizar un 
+poco menos.
+
+```{r}
+
+## Suavización de los puntos resultantes después de las dos suavizaciones previas
+
+#### Creación de curva de Loess
+fit_trend_f <- loess(
+  res.trend.2 ~ period,
+  ventas_v2,
+  span=0.2,
+  degree=1
+)
+
+
+#### Ajuste de la curva con los datos
+ventas_vf <- ventas_v2 %>%
+  mutate(ajuste_f = fitted(fit_trend_f)) %>%
+  mutate(res.trend.f = res.trend.2 - ajuste_f)
+
+print(head(ventas_vf))
+
+```
+
+
+
+6. Visualiza el ajuste, genera una gráfica de páneles, en cada uno muestra una componente de la serie de tiempo y los residuales.
+```{r}
+
+## Datos originales + ajuste a tendencia
+g1 <- ggplot(
+  ventas_vf,
+  aes(
+    x=period
+  )
+) +
+  geom_point(
+    aes(
+      y=log(sales.kg)
+    )
+  ) +
+  geom_line(
+    aes(
+      y=ajuste_1
+    ),
+    colour="red"
+  ) +
+  labs(
+    title="Datos originales + ajuste a tendencia"
+  )
+
+
+## Datos sin tendencia + ajuste estacional
+g2 <- ggplot(
+  ventas_vf,
+  aes(
+    x=period
+  )
+) +
+  geom_point(
+    aes(
+      y=res.trend.1
+    )
+  ) +
+  geom_line(
+    aes(
+      y=ajuste_2
+    ),
+    colour="red"
+  ) +
+  labs(
+    title="Datos sin tendencia + ajuste estacional"
+  )
+
+
+## Datos sin tendencia y sin estacionalidad
+g3 <- ggplot(
+  ventas_vf,
+  aes(
+    x=period
+  )
+) +
+  geom_point(
+    aes(
+      y=res.trend.2
+    )
+  ) +
+  geom_line(
+    aes(
+      y=ajuste_f
+    ),
+    colour="red"
+  ) +
+  labs(
+    title="Datos sin tendencia y sin estacionalidad"
+  )
+
+
+## Datos finales
+g4 <- ggplot(
+  ventas_vf,
+  aes(
+    x=period
+  )
+) +
+  geom_point(
+    aes(
+      y=res.trend.f
+    )
+  ) +
+  labs(
+    title="Datos finales"
+  )
+
+
+print(g1)
+print(g2)
+print(g3)
+print(g4)
+
+```
+
+7. Genera una gráfica de cuantiles para los residuales.
+
+```{r}
+
+## Gráfica de los residuales
+ggplot(
+  ventas_vf,
+  aes(
+    sample = res.trend.f
+  )
+) +
+  geom_qq(
+    distribution = stats::qunif
+  ) +
+  ylab("Ventas (residual)") +
+  xlab("")
+
+```
+

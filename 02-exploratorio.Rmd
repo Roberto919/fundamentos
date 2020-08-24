@@ -1120,7 +1120,8 @@ ventas semanales de un producto a lo largo de 5 años.
 ```{r binsmoother-animation, echo=FALSE, warning=FALSE, message=FALSE, fig.align='center'} 
 library(gganimate)
 library(broom)
-ventas <- readr::read_csv(here::here("data", "ventas_semanal.csv"))
+# ventas <- readr::read_csv(here::here("data", "ventas_semanal.csv"))
+ventas <- read.csv(file="data/ventas_semanal.csv")
 
 if(!fs::file_exists(here::here("images", "02_loess-spans.gif"))){
   # spans a considerar
@@ -1262,9 +1263,15 @@ de la componente anual:
 
 
 ```{r}
+print(head(natalidad))
+
 mod_1 <- loess(n ~ as.numeric(fecha), data = natalidad, span = 0.2, degree = 1)
-datos_dia <- natalidad %>% mutate(ajuste_1 = fitted(mod_1)) %>%
+
+datos_dia <- natalidad %>% 
+  mutate(ajuste_1 = fitted(mod_1)) %>%
     mutate(res_1 = n - ajuste_1)
+
+print(head(datos_dia))
 ```
 
 
@@ -1293,6 +1300,7 @@ pero con menos suavizamiento. Así evitamos capturar tendencia:
 
 ```{r}
 mod_anual <- loess(res_1 ~ as.numeric(fecha), data = datos_dia, degree = 2, span = 0.005)
+
 datos_dia <- datos_dia %>% mutate(ajuste_2 = fitted(mod_anual)) %>%
     mutate(res_2 = res_1 - ajuste_2)
 ```
