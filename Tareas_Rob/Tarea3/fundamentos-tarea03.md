@@ -32,7 +32,7 @@ Para cada uno de los siguientes estudios, ubícalos en el recuadro y contesta lo
 
    - **Selección de unidades ->** Dado que los individuos seleccionados para el estudio provienen de una base médica, es muy probable que estos ya tengan una condición de salud anormal. Adicionalmente, hubo individuos que rechazaron participar en el estudio. Ambos eventos le añaden incertidumbre al proceso generador de los datos y nos aleja de la posibilidad de afirmar que la selección de unidades fue realizada de manera aleatoria.
 
-   - **Asignación de unidades a grupos ->** Debido a que el estudio únicamente consistió en elegir individuos de dos poblaciones, se considera que no hubo una asignación de unidades a grupos.
+   - **Asignación de unidades a grupos ->** El "tratamiento" en este caso sería la raza de la persona.
 
    - **Asignación de cuadrante ->** En este caso se posicionaría el estudio en el cuadrante inferior derecho.
 
@@ -47,7 +47,7 @@ Para cada uno de los siguientes estudios, ubícalos en el recuadro y contesta lo
 
 - **Selección de unidades ->** No es claro el proceso a través del cual se generaron los datos. No se puede concluir que fue un proceso aleatorio.
 
-- **Asignación de unidades a grupos ->** Dado que el proceso solamente consistió en estudiar la situación de dos grupos distintos de individuos, no hubo un ejercicio de asignación de unidades a grupos.
+- **Asignación de unidades a grupos ->** Esta asignación depende de una condición preexistente.
 
 - **Asignación de cuadrante ->** En este caso se posicionaría el estudio en el cuadrante inferior derecho.
 
