@@ -1,7 +1,6 @@
 # Pruebas de hipótesis
 
 ```{r setup, include=FALSE}
-<<<<<<< HEAD
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.align = 'center')
 N_rep <- 1000
 ```
@@ -95,12 +94,7 @@ simular_serie <- function(n = 1000, lambda = 1, ac = 0.7, x_inicial = 1){
     for(i in 2:n){
         x[i] <-  ac*(x[i - 1]) + rgamma(1, 1, 1 / lambda)
     }
-<<<<<<< HEAD
     tibble(t = 1:n, obs = x) %>% filter(t > 50) %>%
-=======
-    tibble(t = 1:n, obs = x) %>% filter(t > 50) %>% 
->>>>>>> upstream/render-html
-        mutate(t = t - 50 + 1)
 }
 ```
 
