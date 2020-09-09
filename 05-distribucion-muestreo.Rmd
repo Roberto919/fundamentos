@@ -241,6 +241,7 @@ Supón que tenemos una muestra de 30 observaciones de una distribución
 uniforme $[0,b]$.
 
 - ¿Qué tan buen estimador de $b/2$ es la media muestral? ¿Cómo lo cuantificarías?
+  # - Este sí puede ser un buen estimador, como vimos en nuestro ejemplo arriba.
 - ¿Qué tan buen estimador del cuantil 0.8 de la distribución uniforme es
 el cuantil 0.8 muestral? ¿Qué desventajas notas en este estimador?
 
@@ -267,6 +268,7 @@ Este error estándar mide qué tanto varía el estimador $T$ de muestra a muestr
 **Observación**: es importante no confundir el error estándar con
 la desviación estándar de una muestra (o de la población).
 ```
+<!-- - El error estándar es la desviación de la medida de interés. Variación entre las muestras -->
 
 
 En nuestro ejemplo
@@ -292,7 +294,8 @@ map_dbl(1:10000, ~ max(runif(15))) %>% sd
 Como ejercicio para contrastar estos conceptos,
 puedes considerar: ¿Qué pasa con la desviación estándar de una muestra muy grande de uniformes? ¿Qué pasa con el error estándar de la media muestral de una muestra muy grande de uniformes?
 ```
-
+<!-- - En el caso de la desviación estándar solo vamos a ver que está no cambiará, solo será más uniforme y todas tenderán al valor medio. -->
+<!-- - En el caso del error estándar, este sí bajará considerablemente, porque cada vez se hará más angosa nuestra curva de estimación. -->
 
 
 ### Ejemplo: valor de casas {-}
@@ -416,6 +419,7 @@ Supongamos que las $X_i$'s son independientes y exponenciales con tasa $\lambda 
 de exponenciales independientes es una distribución gamma con parámetros $(n, \lambda)$,
 y esta es la distribución de muestreo de nuestra estadística $S$ bajo las hipótesis
 que hicimos.
+<!-- - La tasa lambda es que la media es  -->
 
 Podemos checar este resultado con simulación, por ejemplo para una
 muestra de tamaño $n=15$ con $\lambda = 1$:
