@@ -327,19 +327,24 @@ te <- tea %>% select(how, price, sugar)
 ```{r}
 te_azucar <- tea %>% select(how, sugar) %>% 
   mutate(how = ifelse(how == "tea bag", "bolsa_exclusivo", "suelto o bolsa"))
+te_azucar
+
 te_azucar %>% count(how, sugar) %>% 
-  pivot_wider(names_from = how, values_from = n) %>% 
+  pivot_wider(names_from = how, values_from = n) %>%
   formatear_tabla()
 ```
 
 Y en proporciones tenemos que:
 
 ```{r, echo = FALSE}
-prop_azucar <- te_azucar %>% count(how, sugar) %>% 
-  group_by(how) %>% mutate(prop = n / sum(n), n = sum(n)) %>% 
-  filter(sugar == "sugar") %>% 
-  select(how, prop_azucar = prop, n) %>% 
+prop_azucar <- te_azucar %>% 
+  count(how, sugar) %>% 
+  group_by(how) %>%
+  mutate(prop = n / sum(n), n = sum(n)) %>%
+  filter(sugar == "sugar") %>%
+  select(how, prop_azucar = prop, n) %>%
   mutate(prop_azucar = round(prop_azucar,2))
+
 prop_azucar %>% formatear_tabla()
 ```
 
@@ -647,7 +652,7 @@ Ahora construimos nuestra distribución nula o de referencia:
 
 ```{r sims-te-2}
 set.seed(2)
-reps <- lineup(null_permute("Tea"), te_azucar, n = 10000)
+reps <- lineup(null_permute("Tea"), te_azucar, n = 100)
 valores_ref <- reps %>% 
   group_by(.sample) %>% 
   nest() %>% 
@@ -835,7 +840,7 @@ calc_fusion <- function(stat_fusion){
 calc_cociente <- calc_fusion(stat_fusion)
 dif_obs <- calc_cociente(fusion)
 # permutar
-valores_ref <- permutaciones_est(fusion, nv.vv, calc_cociente, n = 10000)
+valores_ref <- permutaciones_est(fusion, nv.vv, calc_cociente, n = 1000)
 dist_perm_nv <- ecdf(valores_ref$diferencia) 
 cuantil_obs <- dist_perm_nv(dif_obs)
 ```
@@ -851,7 +856,7 @@ g_1 <- ggplot(valores_ref, aes(sample = diferencia)) +
 g_2 <- ggplot(valores_ref, aes(x = diferencia)) + geom_histogram(binwidth = 0.04) + 
     coord_flip() + xlab("") + labs(subtitle = " ") +
     geom_vline(xintercept = dif_obs, colour = "red") +
-    annotate("text", x = dif_obs, y = 700, label = cuantil_obs,vjust = 0, 
+    annotate("text", x = dif_obs, y = 100, label = cuantil_obs,vjust = 0, 
              colour = "red")
 g_1 + g_2 
 ```
