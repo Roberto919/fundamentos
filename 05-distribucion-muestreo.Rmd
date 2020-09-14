@@ -188,8 +188,11 @@ caso, el histograma de la distribución de valores poblacionales es
 ```{r, fig.width = 5, fig.height=3}
 ggplot(marco_casas, aes(x = precio_miles)) + geom_histogram()
 ```
+
+
 que en general no tiene ver mucho en escala o forma con la distribución de muestreo
 de nuestro estimador del total.
+
 
 ## Más ejemplos {-}
 
@@ -247,6 +250,7 @@ el cuantil 0.8 muestral? ¿Qué desventajas notas en este estimador?
 
 ```
 
+
 ## El error estándar {-}
 
 Una primera medida útil de la dispersión de la distribución de muestreo
@@ -259,7 +263,6 @@ se le llama error estándar:
 **Definición** A la desviación estándar de una estadística $T$ le llamamos
 su **error estándar**, y la denotamos por $\text{ee}(T)$. A cualquier estimador
 de este error estándar lo denotamos como $\hat{\text{ee}}(T)$.
-
 ```
 
 Este error estándar mide qué tanto varía el estimador $T$ de muestra a muestra.
