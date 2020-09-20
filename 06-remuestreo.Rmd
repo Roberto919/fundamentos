@@ -92,9 +92,7 @@ es más útil presentar la información de esta manera que usando alguna prueba
 de hipótesis.**
 
 
-
 ## La idea del bootstrap {-}
-
 
 Como explicamos, el problema que tenemos ahora es que normalmente sólo tenemos una muestra, 
 así que
@@ -112,6 +110,7 @@ aproximar la distribución de muestreo de nuestro estimador, y así entender su
 variabilidad.
 2. Pero **no** tenemos la distribución poblacional.
 3. **Sin embargo, podemos estimar la distribución poblacional con nuestros valores muestrales**.
+
 
 **Mundo bootstrap**
 
@@ -219,7 +218,6 @@ round(ee_boot, 2)
 ```
 
 
-
 ```{block2, type='mathblock'}
 **Definición**. Sea $X_1,X_2,\ldots,X_n$ una muestra independiente y idénticamente
 distribuida, y $T=t(X_1, X_2, \ldots, X_n)$ una estadística. Supongamos que sus valores
@@ -228,7 +226,6 @@ que obervamos son $x_1, x_2,\ldots, x_n$.
 La **distribución de remuestreo** de $T$ es la
 distribución de $T^*=t(X_1^*, X_2^*, \dots X_n^*)$, donde cada $X_i^*$ se obtiene
 tomando al azar uno de los valores de $x_1,x_2,\ldots, x_n$.
-
 ```
 
 - Otra manera de decir esto es que la remuestra $X_1^*, X_2^*, \ldots, X_n^*$ es una muestra
@@ -249,7 +246,6 @@ sample(muestra, size = 5, replace = TRUE)
 Nótese que algunos valores de la muestra original pueden aparecer varias veces, y otros no aparecen del todo.
 
 
-
 ```{block2, type='comentario'}
 **La idea del bootstrap**. La muestra original es una aproximación de la población
 de donde fue extraída. Así que remuestrear la muestra aproxima lo que pasaría si
@@ -268,7 +264,6 @@ Y el proceso que hacemos es:
 3. Construímos la distribución bootstrap, y examinamos sus características 
 (dónde está centrada, dispersión y forma).
 ```
-
 
 
 ## El principio de plug-in {-}
@@ -307,6 +302,7 @@ un ejemplo de @Chihara muestran lo que acabamos de describir:
 
 
 ```{r mundo-real, warning=FALSE, fig.cap='Mundo Real', echo = FALSE}
+# install.packages("LaplacesDemon")
 library(LaplacesDemon)
 library(patchwork)
 # En este ejemplo la población es una mezcla de normales
@@ -424,7 +420,10 @@ original.
 ```{block2,type='ejercicio'}
 - ¿Porqué no funcionaría tomar muestras sin reemplazo? Piensa si hay independencia
 entre las observaciones de la remuestra, y cómo serían las remuestras sin reemplazo.
+  # - Porque tu muestra sería igualita siempre.
 - ¿Por qué no se puede hacer bootstrap si no conocemos cómo se obtuvo la muestra original?
+    # - Bootstrap debe replicar el proceso a través del cual se seleccionaron los datos.
+    # - Debes respetar como se tomó la muestra. Replicar el proceso generador de datos.
 ```
 
 

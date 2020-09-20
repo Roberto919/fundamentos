@@ -532,6 +532,7 @@ densidad_tbl <- tibble(x = seq(0, 10, 0.01)) %>%
 ```
 
 ```{r, fig.width=7, fig.height=3}
+library(patchwork)
 # qnorm es la función de cuantiles de una normal
 cuantil_50 <- qnorm(0.50, 5, 1)
 cuantil_90 <- qnorm(0.95, 5, 1)
@@ -710,6 +711,41 @@ Y vemos que la aproximación normal es buena para fines prácticos.
 Usando simulaciones haz un histograma que aproxime la distribución de muestreo de $S$. 
 Haz una gráfica de cuantiles normales para checar la normalidad de esta distribución.
 ```
+
+```{r}
+## Validación de la distribución muestral
+library(tidyverse)
+library(patchwork)
+
+dat_simul <- tibble(n_sim = 1:5000) %>%
+  mutate(suma = map_dbl(n_sim, ~ sum(runif(30))))
+
+g_1 <- ggplot(
+  dat_simul,
+  aes(x = suma)
+) +
+  geom_histogram()
+
+g_2 <- ggplot(
+  dat_simul,
+  aes(sample = suma)
+) +
+  geom_qq(alpha = 0.3) + geom_qq_line(colour = "red")
+  
+
+g_1 + g_2
+```
+```{r}
+library(nullabor)
+lineup_normal <- lineup(null_dist("suma", dist = "normal"), dat_simul)
+ggplot(lineup_normal, aes(sample = suma)) +
+  geom_qq(distribution = stats::qnorm) +
+  geom_qq_line(colour = "red") +
+  facet_wrap(~ .sample)
+```
+<!-- - La hipótesis nula en este caso es que la distribución es normal. -->
+<!-- - Como no podemos distinguir los datos, entonces concluimos que sí son normales -->
+
 
 ## Ejemplo {-}
 Cuando el sesgo de la distribución poblacional es grande, puede ser necesario
