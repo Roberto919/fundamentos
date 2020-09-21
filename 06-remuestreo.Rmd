@@ -885,6 +885,8 @@ g_qq <- totales_boot %>%
   geom_hline(yintercept = quantile(totales_boot$total_boot, 0.025), colour = "gray")
 g_hist + g_qq
 ```
+<!-- - A pesar de que la gráfica qq no se ve tan tan bien en una cola, sí la usamos porque el valor que nos interesa está en el centro. -->
+
 
 En este caso, distribución de muestreo presenta cierta asimetría, pero la
 desviación no es grande. En la parte central la aproximación normal es
@@ -967,8 +969,8 @@ simular_intervalos <- function(rep, size = 150){
   totales_boot
 }
 # Para recrear, correr:
-# sims_intervalos <- map(1:100, ~ simular_intervalos(rep = .x))
-# write_rds(sims_intervalos, "cache/sims_intervalos.rds")
+sims_intervalos <- map(1:100, ~ simular_intervalos(rep = .x))
+write_rds(sims_intervalos, "cache/sims_intervalos.rds")
 # Para usar resultados en cache:
 sims_intervalos <- read_rds("cache/sims_intervalos.rds")
 ```
@@ -1223,6 +1225,8 @@ de cada momento del día, por ejemplo? ¿Qué harías si no fuera así, por ejem
 se escogieron al azar tickets de todos los disponibles en un periodo?
 
 ```
+<!-- - Esto es como un proceso separado... como si hiciéramos dos ejercicios independientes -->
+<!-- - Esto afecta para el tema de "strata". Aquí sí tenemos que segmentar cada una por separado -->
 
 
 ## Bootstrap para dos muestras {-}
