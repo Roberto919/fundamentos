@@ -38,6 +38,7 @@ poblacional $t$ es
 
 $$\hat{t} = \frac{N}{n} \sum_{i=1}^{100} X_i = N\bar{x}$$
 
+
 Esta función implementa el estimador:
 
 ```{r}
@@ -664,7 +665,7 @@ replicaciones_2
 ggplot(replicaciones_2, aes(sample = est_total_millones)) +
   geom_qq(alpha = 0.3) + geom_qq_line(colour = "red")
 ```
-Y vemos que en efecto el TCL aplica en este ejemplo, y la aproximación es buena.
+Y vemos que en efecto el TCL (Teorema Central del Límite) aplica en este ejemplo, y la aproximación es buena.
 Aunque la población original es sesgada, la descripción de la distribución de
 muestreo es sorprendemente compacta:
 
