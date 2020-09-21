@@ -173,12 +173,10 @@ podíamos muestrear repetidamente la población y calcular el valor del
 estimador en cada una de estas muestras. Aquí no tenemos la población,
 **pero tenemos una estimación de la población**: la muestra obtenida.
 
-Así que para 
-evaluar la variabilidad de nuestro estimador, entramos en el
+Así que paraevaluar la variabilidad de nuestro estimador, entramos en el
 mundo boostrap, y consideramos que la población es nuestra muestra.
 
-Podemos entonces extraer un número
-grande de muestras con reemplazo de tamaño 200 **de la muestra**: el muestreo
+Podemos entonces extraer un número grande de muestras con reemplazo de tamaño 200 **de la muestra**: el muestreo
 debe ser análogo al que se tomó para nuestra muestra original. Evaluamos nuestra
 estadística (en este caso la media) en cada una de estas remuestras:
 
