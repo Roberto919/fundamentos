@@ -93,6 +93,15 @@ de hipótesis.**
 
 
 ## La idea del bootstrap {-}
+<!-- - Preferimos bootstrap sobre plug-in -->
+<!--   - Vemos la distribución -->
+<!--   - Podemos calcular más estadísticas (e.g. mediana, correlación) que con el plug-in -->
+
+<!-- - Hay dos fuentes de variación -->
+<!--   - Aleatorización de tomar la muestra -->
+<!--   - Estoy tomando muestras con reemplazo -->
+<!--     - Esta segunda se puede eliminar tomando todas las muestras bootstrap posibles -->
+
 
 Como explicamos, el problema que tenemos ahora es que normalmente sólo tenemos una muestra, 
 así que
