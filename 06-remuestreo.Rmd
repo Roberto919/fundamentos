@@ -1464,6 +1464,7 @@ en los extremos de los datos (casas grandes y chicas), lo cual es natural. Aunqu
 resumir para hacer bandas de confianza, mostrar remuestras de esta manera es informativo: por ejempo:
 vemos cómo es probable también que para casas de emnos de 70 metros cuadrados el precio por
 metro cuadrado no cambia tanto (líneas constantes)
+<!-- - La muestra para la prueba la sacas por renglones. -->
 
 
 ## Bootstrap y estimadores complejos: tablas de perfiles {-}
@@ -1550,6 +1551,13 @@ ggplot(resumen_perfiles, aes(x = price, y = perfil_media, ymax = ymax, ymin = ym
     facet_wrap(~how) + coord_flip() +
     geom_hline(yintercept = 0, colour = "gray") + ylab("Perfil") + xlab("Precio")
 ```
+<!-- - Un problema de este ejercicio es que hay clases en las que no tenemos intervalos. -->
+<!--   - Podemos resolver agregando un perfil falso a todos los casos (para que no tengamos clases vacías). -->
+<!-- - Opciones -->
+<!--   - 1ra -> quitar del análisis -->
+<!--   - 2da -> agrupar en otra categoría -->
+<!--   - 3ra -> agregar un datos falso a cada personas. -->
+
 
 Nótese una deficiencia clara del bootstrap: para los que compran té suelto,
 en la muestra no existen personas
@@ -1720,7 +1728,8 @@ qq_cgl <- ggplot(tibble(medias_cgl), aes(sample = medias_cgl)) +
 
 hist_cgl + qq_cgl
 ```
-
+<!-- - Hay dos formas de reducir dos errores estándar -->
+<!--   -  -->
 
 
 #### Ejemplo: ENIGH {-}
