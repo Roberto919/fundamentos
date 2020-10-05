@@ -1599,7 +1599,7 @@ Imaginemos que tenemos una población de `r n_escuelas`,
 y queremos estimar la media de las calificaciones de los estudiantes en una prueba.
 
 ```{r}
-head(estudiantes)
+estudiantes
 ```
 La primera idea sería tomar una muestra aleatoria (MAS, muestreo aleatorio simple),
 donde todos los estudiantes tienen igual probabilidad de ser seleccionados. Con
@@ -1607,8 +1607,12 @@ estas condiciones el presupuesto alcanza para seleccionar a 60 estudiantes, hace
 esto y calculamos la media.
 
 ```{r}
+## Media de la muestra
 muestra <- sample_n(estudiantes, 60)
 round(mean(muestra$calif), 2)
+
+## Media de la población
+round(mean(estudiantes$calif), 2)
 ```
 
 ```{r, echo = FALSE, results='hide'}
@@ -1647,10 +1651,25 @@ indígena) y sabemos también que sabemos que la calificación de los estudiante
 escuelas rurales o indígenas.
 
 ```{r, fig.height=2.8}
-muestra_estrat <- estudiantes %>%
+## Testing code (beggining)
+x <- estudiantes %>%
     group_by(tipo) %>%
     sample_frac(0.0004)
 dim(muestra_estrat)
+
+x %>% 
+  group_by(tipo) %>%
+  tally()
+
+estudiantes %>%
+  group_by(tipo) %>%
+  tally() %>%
+  mutate(
+    prop = n/sum(n),
+    sample = n*0.0004
+    )
+## Testing code (end)
+
 
 muestrea_estrat <- function(){
     muestra <- estudiantes %>%
@@ -1688,6 +1707,8 @@ muestra_estrat %>%
 ```{r}
 n_distinct(muestra_estrat$ind_escuela)
 ```
+<!-- Aquí estamos viendo que se deberían visitar 59 escuelas para sacar las 60 pruebas de examen. Claramente, este approach no es muy eficiente. -->
+
 
 Es fácil ver que visitar una escuela para aplicar solo uno o dos exámenes no es
 muy eficiente en cuestión de costos. Es por ello que se suelen tomar muestras
@@ -1729,7 +1750,8 @@ qq_cgl <- ggplot(tibble(medias_cgl), aes(sample = medias_cgl)) +
 hist_cgl + qq_cgl
 ```
 <!-- - Hay dos formas de reducir dos errores estándar -->
-<!--   -  -->
+<!--   - Tomando muestras estratificadas  -->
+<!-- - tomando muestras con base en los conglomerados -->
 
 
 #### Ejemplo: ENIGH {-}
@@ -1771,7 +1793,8 @@ población de INEGI.
 
 
 ```{r, message=FALSE, warning=FALSE}
-concentrado_hogar <- read_csv(here::here("data",
+concentrado_hogar <- read_csv(here::here("Documents/ReposRob_RobPer/ITAMmcd/Fundamentos_Est/Venv_FundEst/fundamentos",
+    "data",
     "conjunto_de_datos_enigh_2018_ns_csv",
     "conjunto_de_datos_concentradohogar_enigh_2018_ns", "conjunto_de_datos",
     "conjunto_de_datos_concentradohogar_enigh_2018_ns.csv"))
@@ -1791,6 +1814,8 @@ hogar <- concentrado_hogar %>%
     ungroup()
 hogar
 ```
+<!-- - En este caso la columna factor se refiere al número de casas que cada renglón representa. -->
+
 
 Para el cálculo de estadísticos debemos usar los factores de expansión, por
 ejemplo el ingreso trimestral total sería:
@@ -1922,6 +1947,10 @@ enigh_boot %>%
 enigh_boot %>%
     group_by(edo) %>%
     srvyr::summarise(mean_ingcor = survey_mean(ing_cor))
+```
+
+```{r}
+hogar
 ```
 
 Resumiendo:
