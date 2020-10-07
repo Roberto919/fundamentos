@@ -92,6 +92,8 @@ de 8 registros, escogiendo uno por uno al azar de manera independiente. Revisamo
 8 registros, y obtenemos los siguientes datos:
 
 $$x_1 = 0, x_2 = 1, x_3 = 0, x_4 = 0, x_5 =1, x_6 =0, x_7 =0, x_8 =0$$
+<!-- - En este caso el estimador plug-in sería tomar la proporción de registros en esta muesta (2/8) -->
+
 
 donde 1 indica un error menor. Encontramos dos errores menores. ¿Cómo estimamos el número de
 registros con errores leves en la base de datos?
@@ -136,6 +138,8 @@ ggplot(dat_verosim, aes(x = x, y = prob)) + geom_line() +
   geom_vline(xintercept = 0.25, color = "red") +
   xlab("p")
 ```
+<!-- - En este caso coincide el resultado bootstrap con máxima verosimilitud pero esto no se va a cumplir siempre. -->
+<!-- - Esta curva nos explica cuáles son los valores más verosímiles. -->
 
 
 Nótese que esta gráfica:
@@ -180,12 +184,18 @@ Ahora definimos qué es un estimador de máxima verosimilitud.
 \end{align}
 donde $\theta$ denota el espacio parametral. Es decir, el espacio válido de búsqueda congruente con la definición del modelo. 
 ```
+<!-- - Los parámetros no pueden tomar cualquier valor, están restringidos al problema particular. -->
+
 
 ```{block, type = 'ejercicio'}
 
 - Considera el caso de una normal con media y varianza desconocidas. ¿Cuáles son los espacios parametrales para efectuar $\mathsf{MLE}$?
 - Considera el caso de una Binomial con parámetros $N$ y $p$ desconocidos. ¿Cuáles son los espacios parametrales para la búsqueda del $\mathsf{MLE}$?
 ```
+<!-- - Media: los reales -->
+<!-- - Varianza: los positivos -->
+<!-- - N: los naturales hasta el infinito -->
+<!-- - p: 0 a 1 -->
 
 
 Obsérvese que para construir la verosimilitud y en consecuencia buscar por
@@ -204,7 +214,7 @@ Probamos esta idea con un proceso más complejo.
 corrida. Cada corrida se producen 500 productos, y se muestrean 10 para
 detectar defectos. Cuando la máquina funciona correctamente, la tasa de defectos
 es de 3%. Cuando la máquina no está funcionando correctamente la tasa de defectos
-es de 10%
+es de 20%
 
 Supongamos que escogemos al azar 11 corridas, y obervamos los siguientes
 número de defectuosos:
@@ -251,6 +261,8 @@ calc_verosim <- function(r){
 verosim <- calc_verosim(c(1, 0, 0, 3, 0, 0, 0, 2, 1, 0, 0))
 verosim(0.1)
 ```
+
+
 
 ```{r}
 dat_verosim <- tibble(x = seq(0,1, 0.001)) %>% mutate(prob = map_dbl(x, verosim))
@@ -344,12 +356,19 @@ $$\ell_n(\theta) = \log \left(\mathcal{L}_n(\theta)\right),$$
 donde hemos suprimido la dependencia en la muestra por conveniencia.
 ```
 
+<!-- - Hay que recordar que theta puede ser muy complicada, puedes ser: -->
+<!--   - "p" -->
+<!--   - "lambda" -->
+<!--   - un vector -->
+
+
 ```{block, type = 'ejercicio'}
 Considera una muestra de variables aleatorias Gaussianas con media $\mu$ y varianza $\sigma^2.$ Escribe la 
 verosimilitud para una muestra de tamaño $n,$ y después escribe la función de log-verosimilitud. ¿Que interpetación 
 le das a la ecuación resultante? ¿La has visto en algunos otros ejemplos en secciones anteriores?  
 *Pista.* Recuerda la sección de regresión local.  
 ```
+<!-- - El resultado es la media y la varianza -->
 
 
 
@@ -370,6 +389,8 @@ Obtenemos el mismo máximo. Podemos incluso resolver numéricamente:
 ```{r, warning = FALSE}
 solucion <- optim(p = 0.5, log_verosimilitud, control = list(fnscale = -1))
 solucion$par
+
+# Por default optim minimiza. Lo de control es para maximizar.
 ```
 
 Y en nuestro segundo ejemplo:
