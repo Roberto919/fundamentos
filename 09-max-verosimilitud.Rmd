@@ -482,6 +482,8 @@ crear_log_verosim <- function(n, n_sosp){
 }
 ```
 
+<!-- - Para poder determinar la probabilidad, tenemos que usar la "probabilidad total" -->
+
 La verosimilitud es una función de $p$.
 
 ```{r}
