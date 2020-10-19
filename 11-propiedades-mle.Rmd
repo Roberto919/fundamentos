@@ -1,5 +1,8 @@
 # Propiedades teóricas de MLE
 
+- Referencias para hacer ejercicios.
+  - ...
+
 ```{r setup, include=FALSE, message=FALSE}
 library(tidyverse)
 library(patchwork)
@@ -19,6 +22,7 @@ $f(x; \theta)$ satisfaga ciertas condiciones de regularidad. En particular
 veremos las condiciones para que los estimadores de máxima verosimilitud sean:
 consistentes, asintóticamente normales, asintóticamente insesgados,
 asintóticamente eficientes, y equivariantes.
+<!-- - No se deben considerar como estimadores puntuales. -->
 
 ```{block, type = 'comentario'}
 
@@ -164,6 +168,8 @@ Ahora, dado que sabemos que $D( \theta^* \| \theta) \geq 0$ y $D( \theta^* \| \t
 en $\hat \theta_n \approx \theta^*,$ y la approximación se vuelve una identidad
 en el límite $n\rightarrow \infty.$ 
 
+<!-- - Cuando se cumple esta regla, el estimador es consistente. -->
+
 ```{block, type = 'ejercicio'}
 
 En los pasos anteriores: 
@@ -213,7 +219,7 @@ g1 <- dt %>%
   geom_ribbon(aes(ymin = p_true-TOL, ymax = p_true + TOL ), alpha = .3) + 
   geom_line(aes(group = muestra), alpha = .05) + 
   geom_hline(yintercept = p_true, lty = 2, color = 'red') +
-  ylab(TeX('$\\bar{x}_n$')) + 
+  # ylab(TeX('$\\bar{x}_n$')) + 
   # geom_line(data = esperado, aes(x = 1:n_muestra, y = media), lty = 1, color = 'lightblue') +
   scale_x_log10()
 
@@ -240,6 +246,8 @@ que las trayectorias de los estimadores $\hat p_n$ se mantengan dentro de las ba
 alta probabilidad conforme $n$ aumenta. 
 
 ## Equivarianza del $\textsf{MLE}$  {-}
+
+<!-- - En la tarea 9 vimos que el cociente es el valor de máxima verosimilitud. -->
 
 Muchas veces nos interesa reparametrizar la función de verosimilitud con el motivo 
 de simplificar el problema de optimización asociado, o simplemente por conveniencia 
@@ -487,6 +495,8 @@ Comprueba las fórmulas para los errores estándar tanto para la probabilidad de
 
 ### El método delta {-}
 
+<!-- - Este método es solo aproximación. Puede ser tan preciso como bootstrap. -->
+
 El ejercicio anterior nos sugiere una pregunta natural: Cómo establecer la
 distribución asintótica de un estimador cuando ya se conoce la de una pre-imagen
 de él? Es decir, si ya conocemos la distribución de $\theta,$ podemos establecer
@@ -561,6 +571,8 @@ es decir tiene una varianza ligeramente mayor. Por lo tanto, decimos que la
 mediana tiene una *eficiencia relativa* con respecto a la media del $.63 \%
 (\approx \pi/2)$. Es decir, la mediana sólo utliza una fracción de los datos
 comparado con la media.
+
+<!-- - La media es un estimador más eficiente porque usa más datos que la mediana. -->
 
 El siguiente teorema, **la desigualdad de Cramer-Rao**, nos permite establecer
 esta resultado de manera mas general para cualquier estimador insesgado.

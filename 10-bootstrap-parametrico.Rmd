@@ -203,6 +203,8 @@ ggplot(reps_boot %>% pivot_wider(names_from = parametro, values_from = estimador
        aes(x = media, y = sigma)) + geom_point(alpha = 0.5) + coord_equal()
   
 ```
+<!-- - Aquí no vemos mucha dependencia entre mu y sigma. -->
+
 Esta es nuestra aproximación a la distribución de remuestreo de nuestro
 par de estadísticas $(\mu_{\mathsf{MLE}}, \sigma_{\mathsf{MLE}})$. En este caso, parecen ser
 independientes (lo cual es posible demostrar).
@@ -243,6 +245,9 @@ no-paramétrico.
 
 ## Verificando los supuestos distribucionales {-}
 
+<!-- - Una de las herramientas más comunes es hacer gráficas cuantiles-cuantiles. -->
+<!--   - Podemos ver en qué son distintas. -->
+
 Como hemos discutido antes, podemos hacer pruebas de hipótesis para checar si una muestra
 dada proviene de una distribución conocida. Sin embargo, la herramienta más común es
 la de los qq-plots, donde podemos juzgar fácilmente el tamaño de las desviaciones
@@ -276,6 +281,8 @@ g_exp <- ggplot(tibble(muestra = muestra), aes(sample = muestra)) +
 g_exp
 ```
 
+<!-- - Esta gráfica nos enseña que hay un desajuste. La cola es considerablemente más larga que la exponencial. -->
+
 Donde vemos que el desajuste es considerable, y los datos tienen
 una cola derecha considerablemente más larga que la de exponencial (datos son
 casi dos veces más grande de lo que esperaríamos), y la cola
@@ -291,6 +298,8 @@ g_gamma <- ggplot(tibble(muestra = muestra), aes(sample = muestra)) +
   geom_abline() + labs(subtitle = "Gráfica de cuantiles gamma")
 g_exp + g_gamma
 ```
+
+<!-- - La gamma nos muestra que tiene un mejor ajuste. -->
 
 El ajuste es considerablemente mejor para la distribución gamma
 (puedes hacer el protocolo *rorschach* para
@@ -339,6 +348,8 @@ g_2 <- ggplot(propinas %>% filter(momento == "Comida"), aes(sample = cuenta_pers
   geom_abline() + labs(subtitle = "Comida")
 g_1 + g_2
 ```
+<!-- - Con esto evaluamos qué tan bueno es nuestro modelo. Vemos que no está mal. -->
+
 El ajuste es bueno, aunque podríamos checar la cola de la derecha en la Comida:
 ¿por qué existen esos valores relativamente grandes (alrededor de 25% más altos
 de lo que esperaríamos). 
@@ -350,7 +361,9 @@ parámetro? Para esto
 puedes revisar el error estándar de los estimadores de máxima verosimilitud que mostramos
 arriba. ¿Qué ventajas verías en usar menos parámetros? ¿Cómo implementarías la 
 estimación?
+  <!-- - Sí, hace sentido porque tenemos un modelo más parsimonioso. -->
 - ¿Qué pasa si intentas ajustar un modelo normal a estos datos?
+  <!-- - Al hacer ejercicio de ajustar una normal vemos que el ajuste no es tan tan bueno. -->
 ```
 
 
@@ -416,6 +429,9 @@ muestra <- simular_modelo(200, params = logit(c(0.3, 0.29)))
 qplot(muestra)
 ```
 
+<!-- - En este caso no es fácil diferenciar entre los dos casos. -->
+<!-- - Nótese que estamos usando la función logit para desacotar el problema. Después estamos aplicando el inverso para regresar los valores originales. -->
+
 ```{r}
 log_p <- crear_log_p(muestra)
 res <- optim(c(0.0, 0.0), log_p, control = list(fnscale = -1))
@@ -427,6 +443,9 @@ probs_mle <- inv_logit(est_mle)
 names(probs_mle) <- c("p_azar", "p_corr")
 probs_mle
 ```
+
+<!-- - Nuestras estimaciones son menos precisas. -->
+<!-- - Con bootstrap vamos a corroborar. -->
 
 En primer lugar, parece ser que nuestras estimaciones son menos precias. Vamos 
 a hacer *bootstrap* paramétrico:
@@ -461,6 +480,10 @@ ggplot(reps_boot,
   geom_point() +
   xlab("p_azar") + ylab("p_corr")
 ```
+<!-- - Vemos que las variables están muy correlacionadas. -->
+<!-- - La probabilidad de azar tiene un rango muy muy grande. -->
+<!-- - Es muy difícil estimar los parámetros y contestar bien. -->
+
 Y notamos un problema grave: Tenemos mucha variación en nuestros estimadores,
 y la correlación entre las estimaciones es alta. Esto deberíamos haberlo esperado,
 pues como las probabilidades de contestar correctamente son muy similares a las
@@ -471,6 +494,8 @@ con los datos**. Decimos entonces que este modelo está mal identificado
 con estos datos.
 - La mala identificación, como vemos, es una propiedad tanto de modelo como 
 datos.
+
+<!-- - En estos casos podemos usar estadística Bayesiana para mejorar la estimación. -->
 
 ```{block, type="ejercicio"}
 - ¿Qué conclusiones acerca del examen obtienes al ver estas simulaciones bootstrap?
