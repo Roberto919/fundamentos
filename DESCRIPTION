@@ -9,7 +9,17 @@ Imports:
     ggthemes,
     ggrepel, 
     lubridate, 
-    gridExtra
+    gridExtra, 
+    here, 
+    broom,
+    LaplacesDemon,
+    nullabor,
+    survey,
+    srvyr,
+    rsample,
+    reshape2, 
+    plotly,
+    mapproj
 Remotes: rstudio/bookdown
 URL: https://github.com/tereom/fundamentos
 BugReports: https://github.com/tereom/fundamentos/issues
