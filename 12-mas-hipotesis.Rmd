@@ -9,6 +9,8 @@ comma <- function(x) format(x, digits = 2, big.mark = ",")
 theme_set(theme_minimal())
 ```
 
+<!-- - Podemos aprovechar lo que hemos visto para pruebas de hipótesis. -->
+
 En esta sección veremos enfoques más clásicos para analizar una prueba de
 hipótesis. en particular veremos situaciones donde podemos hacer algunos
 supuestos teóricos acerca de la distribución de las poblaciones. Esta es una
@@ -34,6 +36,8 @@ Para esta sección seguiremos más a @Wasserman (capítulo 10), pero puedes
 revisar también @Chihara (capítulo 8).
 
 ## Prueba de Wald {-}
+
+<!-- - Sabemos que ciertos parámetros se comportan como normales. -->
 
 Como hemos visto, existe normalidad asintótica en varios estimadores que
 hemos considerado, como medias y proporciones muestrales.
@@ -108,6 +112,8 @@ a la nacional.
 ```{block, type="ejercicio"}
 - Repite esta prueba con una muestra de Chiapas. ¿Qué resultado obtienes?
 ```
+<!-- - Nos da un valor "p" muy chico, con lo cual rechazamos la hipótesis nula. -->
+<!-- - La clave es que la operación es que la ecuación entre nuestro estimador y el valor esperado se comporta como una normal estándar. -->
 
 
 Tenemos entonces:
@@ -156,6 +162,7 @@ Calculamos su valor p:
 valor_p <- 2 * (1 - pnorm(abs(w)))
 valor_p
 ```
+<!-- - Vemos que las pruebas de Wald son fáciles de hacer. -->
 
 Y vemos que en este caso tenemos evidencia baja de que la proporción poblacional 
 es distinta de 0.5. 
@@ -173,7 +180,7 @@ es posible demostrar que la estadística
 $$T = \frac{\bar{X} - \mu}{S / \sqrt{n}}$$
 tiene una distribución exacta que es $t$ de Student con $n-1$ grados de libertad,
 y no depende de otros parámetros, de manera que podemos usarla como distribución
-de referencia y podemos calcular valores $p$ exactos (revisa la sección 8.1 de @Chihara).
+de referencia y podemos calcular valores $p$ exactos (revisa la sección 8.1 de @Chihara).   
 
 La diferencia con usar una prueba de Wald está en que aquí consideramos también
 la variablidad del error estándar estimado, lo que correctamente sugiere que
@@ -236,6 +243,43 @@ $$W = \frac{\hat{p}_1 - \hat{p}_2}{\sqrt{\frac{\hat{p}_1(1-\hat{p}_1)}{n_1}+\fra
 ```{block2, type = 'ejercicio'}
 - Haz una prueba comparando las medias en enlace de la Ciudad de México vs
 Estado de México. ¿Hay evidencia de que tienen distintas medias?
+  # - (Se cambió por hacer comparaciones de los turnos)
+```
+
+```{r}
+set.seed(11)
+
+
+## Datos enlace
+enlace_data <- read_csv("data/enlace_15.csv")
+
+
+## Muestras
+muestra <- enlace_data %>% 
+  filter(turno != "NOCTURNO") %>% 
+  mutate(n_muestra = ifelse(turno == "VESPERTINO", 120, 100)) %>%
+  group_by(turno) %>%
+  sample_n(size = first(n_muestra))
+
+count(muestra, turno)
+  
+muestra %>%
+  group_by(turno) %>%
+  summarise(
+    media = mean(esp_6),
+    s = sd(esp_6),
+    n = n(),
+    ee = s/sqrt(n)
+    )
+
+
+## Calculating "w" value
+w <- (539 - 525)/sqrt(0.869^2 + 1.418^2)
+w
+
+valor_p <- 2 * (1 - pnorm(abs(w)))
+valor_p
+
 ```
 
 
@@ -276,8 +320,12 @@ importante, entonces preferíamos usar el algoritmo 2. Sin embargo, si el costo
 de 24 horas es más alto que 1 hora de corrida, los datos no tienen indicios fuertes
 de que vayamos a perder en desempeño, y podriamos seleccionar el algoritmo 1.
 
+<!-- - En este caso no rechazamos y podemos elegir el algoritmo rápido. -->
+
 
 ## Datos pareados {-}
+
+<!-- - En este caso se trata de datos pareados porque vamos a tener dos resultados para cada obervación (uno con algoritmo 1 y otro con algoritmo 2) -->
 
 Las pruebas que acabamos de ver para comparar medias requieren
 poblaciones independientes. Si las dos muestras están pareadas (es decir,
@@ -373,7 +421,10 @@ el algoritmo 2 parece ser mejor.
 ejemplo? ¿Qué cosa cambia en la fórmula de la estadística de Wald?
 ```
 
+
 ## Pruebas de cociente de verosimilitud {-}
+
+<!-- - Pruebas que involucran varios parámetros. -->
 
 Otra técnica clásica para hacer pruebas de hipótesis es el de cociente
 de verosimilitudes. Con esta técnica podemos hacer pruebas que involucren
@@ -390,9 +441,10 @@ independientes), observamos 75 soles.
 Recordemos la función de log-verosimilitud para el modelo binomial 
 (ignorando constantes que no dependen de $p$) es
 $$\ell(p) = 75 \log(p) + (120 - 75)\log(1-p) $$
+<!-- - Con esta fórmula tomamos en cuenta la probabilidad de éxitos y fracasos. -->
 
 - Primero calculamos el estimador de máxima verosimilitud de $p$, que
-es $\hat{p} = 75/120 = 0.625$. Evaluamos la verosimilitud 
+es $\hat{p} = 75/120 = 0.625$. Evaluamos la verosimilitud. 
 
 $$\ell(\hat{p}) = \ell(0.625) = 75\log(0.625) + 45\log(0.375) = -79.388$$
 - Ahora evaluamos la verosimlitud según la hipótesis nula, donde asumimos
@@ -414,12 +466,18 @@ menos verosimilitud de lo que los datos indican. Por otro lado, cuando este valo
 es cercano a 0, entonces tenemos menos evidencia en contra de la 
 hipótesis nula. Esto se explica en la siguiente gráfica:
 
+<!-- - La "lambda" grande quiere decir que hay mucha diferencia entre lo que estamos comparando. -->
+
 ```{r}
+
+
 log_verosim <- function(p){
   75 * log(p) + (120 - 75) * log(1 - p)
 }
+
 verosim_tbl <- tibble(p = seq(0.4, 0.7, 0.01)) %>% 
   mutate(log_verosim = log_verosim(p))
+
 ggplot(verosim_tbl, aes(x = p, y = log_verosim)) +
   geom_line() +
   geom_segment(x = 75/120, xend = 75/120, y = -130, yend = log_verosim(75/120), colour = "red") +
@@ -431,12 +489,9 @@ ggplot(verosim_tbl, aes(x = p, y = log_verosim)) +
   annotate("text", x = 0.665, y = -91, label ="max verosímil", colour = "red") +
   labs(subtitle = expression(paste(lambda, "=2(3.79)=7.58"))) 
   
-  
 ```
 
-
-
-
+<!-- - ahora vamos a evaluar la "lambda" para ver si la rechazamos o no. -->
 
 Este método puede generalizarse para que no solo aplique a hipótesis
 nulas donde $\theta = \theta_0$, sino en general, $\theta \in \Theta_0$. 
@@ -482,6 +537,8 @@ ggplot(sims_tbl, aes(x = lambda)) +
   geom_histogram(binwidth = 0.7) +
   geom_vline(xintercept = 2.92, colour = "red")
 ```
+<!-- - Es la misma idea con las pruebas de permutación. -->
+
 Con esta aproximación a la distribución de referencia podemos calcular
 el valor p en nuestro ejemplo anterior:
 
@@ -570,6 +627,9 @@ tibble(lambda = lambda_nula_sim) %>%
 Este resultado asintótico no es trivial, y se usa comúnmente para calcular
 valores $p$. Discutiremos más este punto más adelante.
 
+<!-- - Usando la función de pchisq podemos llegar a estos resultados cuando tenemos 1 grado de libertad. -->
+<!-- - Calculamos la densidad acumulada de la distribución y restamos 1. -->
+<!-- - Debemos usar pqhisq. -->
 
 ## Otro tipo de pruebas {-}
 
@@ -639,7 +699,9 @@ est_mv <- res$par
 names(est_mv) <- c("mu_1", "mu_2", "sigma_1", "sigma_2")
 est_mv
 ```
+
 Y tenemos
+
 ```{r}
 lambda_1 <- log_p(est_mv)
 lambda_1
@@ -787,7 +849,6 @@ pchisq(lambda, df =1, lower.tail = FALSE)
 que es similar al que obtuvimos con la estrategia del bootstrap paramétrico.
 
 
-
 ## Errores tipo I y tipo II {-}
 
 En algunas ocasiones, en lugar de solamente calcular un valor-$p$ queremos
@@ -842,7 +903,7 @@ ejempĺo, de qué tan grave es la enfermedad, qué tan costosa es la medicina, y
 - En el enfoque más clásico, los errores tipo I y tipo II generalmente no se balancean
 según su severidad o probabilidad. En lugar de eso, generalmente se establece
 un límite para la probabilidad de cometer un error del tipo I (usualmente 5%, por una
-tradición que no tiene mucho fundamento)
+tradición que no tiene mucho fundamento).
 
 En vista de este ejemplo simple, y las observaciones de arriba:
 
@@ -936,6 +997,7 @@ que es igual a
 ```{r}
 pnorm(-0.7692)
 ```
+
 Y este es el tamaño de la prueba. En otras palabras: si la ciudad no está
 por debajo de la media nacional, hay una probabilidad de 22% de que erróneamente
 se pidan fondos (al rechazar $H_0$).
@@ -974,14 +1036,15 @@ Considera la potencia de la prueba $\beta(\mu)$ que vimos arriba. Discute y
 corre algunos ejemplos para contestar las siguientes preguntas:
 
 - Recuerda la definición: ¿qué significa $\beta(\mu)$?
+    # - Rechazar dado que es verdadera.
 - ¿Qué pasa con la potencia cuando $\mu$ está más lejos de los valores de la hipótesis nula?
+    # - La probabilidad de rechazar es alta.
 - ¿Qué pasa con la potencia cuando hay menos variabilidad en la población? ¿Y cuando
 la muestra es más grande?
+  # - Aumenta la potenicia. Cuando hay poca variabilidad te da más certeza.
 - ¿Qué pasa si hacemos más chico el nivel de significancia?
+  # - Menor de probabilidad de rechazar la hipótesis nula dado que la alternatia es cierta.
 ```
-
-
-
 
 
 ## Consideraciones prácticas {-}
@@ -1008,7 +1071,7 @@ sus diferencias.
 - En la literatura, muchas veces parece que "encontrar una cosa interesante" es
 rechazar una hipótesis nulas con nivel 5% de significancia. Es **más importante entender
 cómo se diseñó el estudio, cómo se recogieron los datos, cuáles fueron las decisiones
-de análisis** que pasar el mítico nivel de 5%
+de análisis** que pasar el mítico nivel de 5%.
 
 - Cuando la potencia es baja (por ejemplo porque el tamaño de muestra es muy chico), 
 tenemos que observar diferencias muy grandes para rechazar. Si probamos algo **poco
