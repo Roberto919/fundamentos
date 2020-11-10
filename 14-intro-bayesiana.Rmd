@@ -99,6 +99,11 @@ en las probabilidades posteriores**.
 ¿Cuál sería la estimación de máxima verosimilitud para este problema? ¿Cómo cuantificaríamos la incertidumbre en la estimación de máxima verosimilitud?
 ```
 
+<!-- - El valor de máxima verosimilitud es el valor de "theta" que maximiza la verosimilitud. -->
+<!-- - En este caso sería 0.6 el estimador de máxima verosimilitud. -->
+<!-- - La incertidumbre la calcularíamos como un intervalo originalmente, pero aquí solo puede haber 1 solo outcome. -->
+  <!-- - No podríamos crear un intervalo como tal. -->
+
 Finalmente, podríamos hacer predicciones usando la **posterior predictiva**.
 Si ${X}_{nv}$ es una nueva tirada adicional de la moneda que estamos usando, nos
 interesaría saber:
@@ -173,18 +178,18 @@ theta = c(0.4, 0.6)
 # probabilidades iniciales
 probs_inicial <- tibble(moneda = c(1, 2),
                         theta = theta, 
-                        prob_inicial = c(0.5, 0.5))
+                        prob_inicial = c(0.5, 0.5)) # Primer valor es la probabilidad de águilas.
 probs_inicial
 # verosimilitud
 crear_verosim <- function(no_soles){
     verosim <- function(theta){
       # prob de observar no_soles en 2 volados con probabilidad de sol theta
-      dbinom(no_soles, 2, theta)
+      dbinom(no_soles, n_volados, theta)
     }
     verosim
 }
 # evaluar verosimilitud
-verosim <- crear_verosim(2)
+verosim <- crear_verosim(2) # Número de éxitos (soles) que ves
 # ahora usamos regla de bayes para hacer tabla de probabilidades
 tabla_inferencia <- probs_inicial %>% 
   mutate(verosimilitud = map_dbl(theta, verosim)) %>% 
@@ -201,10 +206,14 @@ tabla_inferencia %>%
 
 1. ¿Qué pasa cuando el número de soles es 0? ¿Cómo cambian las probabilidades
 posteriores de cada moneda?
+  # - Las probabilidades se invierten. Las probabilidades posteriores.
+  # - Tenemos más evidencia de que está cargada a águila.
 2. Incrementa el número de volados, por ejemplo a 10. ¿Qué pasa si observaste
 8 soles, por ejemplo? ¿Y si observaste 0?
+  # - 
 3. ¿Qué pasa si cambias las probabilidades iniciales (por ejemplo incrementas
 la probabilidad inicial de la moneda 1 a 0.9)?
+  # - 
 
 Justifica las siguientes aseveraciones (para este ejemplo):
 
@@ -315,6 +324,8 @@ sims <- bind_rows(sim_inicial, sim_posterior)
 ggplot(sims, aes(x = theta, fill = dist)) + 
   geom_histogram(aes(x = theta), bins = 30, alpha = 0.5, position = "identity")
 ```
+<!-- - Recordemos que el estimador de máxima verosimilitud sería 19/30. (éxitos entre lanzamientos.) -->
+
 La posterior nos dice cuáles son las *posibilidades* de dónde puede estar
 el parámetro $\theta$. Nótese que ahora excluye prácticamente valores más chicos
 que 0.25 o mayores que 0.9. Esta distribución posterior es el objeto con el
