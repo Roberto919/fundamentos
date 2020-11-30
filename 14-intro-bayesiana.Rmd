@@ -498,6 +498,8 @@ ggplot(sims_theta) +
   xlim(0, 15000) + scale_y_sqrt() +
   geom_rug(data = muestra_loteria, aes(x = numero))
 ```
+<!-- - Escogimos pareto porque era un modelo adecuado. Que se parece al comportamiento de nuestra inicial. -->
+
 Nótese que cortamos algunos valores de la inicial en la cola derecha: un defecto
 de esta distribución inicial, con una cola tan larga a la derecha, es que
 pone cierto peso en valores que son poco creíbles y la vuelve poco apropiada para

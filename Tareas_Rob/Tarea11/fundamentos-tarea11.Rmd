@@ -1,0 +1,39 @@
+---
+title: "Fundamentos estadísticos - Tarea 11"
+output: html_notebook
+---
+
+# Contexto del problema
+Una compañía farmacéutica afirma que su nueva medicina incrementa la probabilidad de concebir un niño (sexo masculino), pero aún no publican estudios. Supón que conduces un experimento en el cual 50 parejas se seleccionan de manera aleatoria de la población, toman la medicina y conciben. Nacen 30 niños y 20 niñas.
+
+```{r}
+
+## Captura de datos iniciales
+n_parejas <- 50 ## Seleccionadas de manera aleatoria
+
+```
+
+
+
+## Problema 1
+Quieres estimar la probabilidad de concebir un niño para parejas que toman la medicina. ¿Cuál es una inicial apropiada (experimenta con la distribución Beta para elegir)? No tiene que estar centrada en 0.5 pues esta corresponde a personas que no toman la medicina, y la inicial debe reflejar tu incertidumbre sobre el efecto de la droga.
+
+```{r}
+
+
+
+```
+
+
+## Problema 2
+Usando tu inicial de a) grafica la posterior y decide si es creíble que las parejas que toman la medicina tienen una probabilidad de 0.5 de concebir un niño.
+
+```{r}
+
+
+
+```
+
+
+## Problema 3
+Supón que la farmacéutica asevera que la probabilidad de concebir un niño cuando se toma la medicina es cercana al 60% con alta certeza. Representa esta postura con una distribución inicial Beta(60,40). Comparala con la inicial de un escéptico que afirma que la medicina no hace diferencia, representa esta creencia con una inicial Beta(50,50). ¿Cómo se compara la probabilidad posterior de concebir un niño (usando las distintas iniciales)?
